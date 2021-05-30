@@ -24,36 +24,53 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
+
+// if no data set date now
+app.get("/api/", (req,res)=>{
+  const date = new Date();
+  const utcDateString = date.toDateString();
+  const utcDateHours = date.toISOString().substr(11, 8);
+  const unixDate = date.getTime()/1000;
+  const utcDate = utcDateString+", "+utcDateHours;
+  res.json({"unix":unixDate, "utc":utcDate});
+})
+
+
+// show the date
 app.get("/api/:date", (req, res)=>{
+  //init
   const dateValue = req.params.date;
-  console.log(dateValue);
   let utcDate;
   let unixDate;
-  if(dateValue!==null){
-    const checkDateFormat = /\d{13}/;
-    if(dateValue.match(checkDateFormat)){
-      //const ans = dateValue.match(checkDateFormat);
+  //check if data is unix
+  const checkDateFormat = /\d{13}/;
+
+  if(dateValue.match(checkDateFormat)){
+    unixDate = dateValue;
+    utcDate = parseInt(dateValue,10);
+    utcDate = new Date(utcDate);
+    const utcDateString = utcDate.toDateString();
+    const utcDateHours = utcDate.toISOString().substr(11, 8);
+    utcDate = utcDateString+", "+utcDateHours;
+
+    res.json({"unix":unixDate, "utc": utcDate});
       
-      unixDate = dateValue;
-      utcDate = parseInt(dateValue,10);
-      utcDate = new Date(utcDate);
-      const utcDateString = utcDate.toDateString();
-      const utcDateHours = utcDate.toISOString().substr(11, 8);
-      utcDate = utcDateString+", "+utcDateHours;
-      
-     
+  }else{
+
+  //check if data is valid date
+    const test = Date.parse(dateValue)
+    if(isNaN(test)){
+      res.json({"error":"Invalid Date"})
     }else{
+      
+  //function if date is normal
       const dateValueFormat = new Date(dateValue);
       utcDate = dateValueFormat.toDateString()+", "+dateValueFormat.toISOString().substr(11, 8);
       unixDate = new Date(dateValue).getTime()/1000;
-    }
 
-  }else{
-    const date = new Date();
-  }
-  
-
-  res.json({"unix":unixDate, "utc": utcDate});
+      res.json({"unix":unixDate, "utc": utcDate});
+    }     
+  } 
 })
 
 
