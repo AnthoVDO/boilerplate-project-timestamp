@@ -26,17 +26,26 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date", (req, res)=>{
   const dateValue = req.params.date;
+  console.log(dateValue);
   let utcDate;
   let unixDate;
   if(dateValue!==null){
     const checkDateFormat = /\d{13}/;
     if(dateValue.match(checkDateFormat)){
       //const ans = dateValue.match(checkDateFormat);
+      
       unixDate = dateValue;
-      utcDate = new Date(dateValue*1000/6000);
-      utcDate = utcDate.toUTCString();
+      utcDate = parseInt(dateValue,10);
+      utcDate = new Date(utcDate);
+      const utcDateString = utcDate.toDateString();
+      const utcDateHours = utcDate.toISOString().substr(11, 8);
+      utcDate = utcDateString+", "+utcDateHours;
+      
+     
     }else{
-      console.log(dateValue);
+      const dateValueFormat = new Date(dateValue);
+      utcDate = dateValueFormat.toDateString()+", "+dateValueFormat.toISOString().substr(11, 8);
+      unixDate = new Date(dateValue).getTime()/1000;
     }
 
   }else{
