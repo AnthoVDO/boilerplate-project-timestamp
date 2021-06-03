@@ -28,11 +28,7 @@ app.get("/api/hello", function (req, res) {
 // if no data set date now
 app.get("/api/", (req,res)=>{
   const date = new Date();
-  // const utcDateString = date.toDateString();
-  // const utcDateHours = date.toISOString().substr(11, 8);
-  //const unixDate = date.getTime()/1000;
   const unixDate = date.getTime();
-  // const utcDate = utcDateString+", "+utcDateHours;
   const utcDate = date.toUTCString();
   res.json({"unix":unixDate, "utc":utcDate});
 })
@@ -44,16 +40,13 @@ app.get("/api/:date", (req, res)=>{
   const dateValue = req.params.date;
   let utcDate;
   let unixDate;
-  //check if data is unix
   const checkDateFormat = /\d{13}/;
 
   if(dateValue.match(checkDateFormat)){
-    unixDate = dateValue;
+    
     utcDate = parseInt(dateValue,10);
+    unixDate = utcDate;
     utcDate = new Date(utcDate);
-    //const utcDateString = utcDate.toDateString();
-    //const utcDateHours = utcDate.toISOString().substr(11, 8)+"GMT";
-    //utcDate = utcDateString+", "+utcDateHours;
 
     utcDate = utcDate.toUTCString();
 
@@ -69,7 +62,6 @@ app.get("/api/:date", (req, res)=>{
       
   //function if date is normal
       const dateValueFormat = new Date(dateValue);
-      //utcDate = dateValueFormat.toDateString()+", "+dateValueFormat.toISOString().substr(11, 8)+" GMT";
       utcDate = dateValueFormat.toUTCString();
       unixDate = new Date(dateValue).getTime();
       res.json({ "unix" : unixDate , "utc" : utcDate});
